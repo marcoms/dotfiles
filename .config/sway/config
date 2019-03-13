@@ -1,0 +1,113 @@
+set $mod Mod4
+
+set $term gnome-terminal
+set $menu rofi -modi drun -show drun -normal-window
+
+# for_window [class="Rofi"] floating enable
+
+output DP-1 background ~/Pictures/mosaic-fs8-squashed.png fill
+output DVI-D-1 bg ~/Pictures/mosaic-fs8-cropped.png fill
+
+font pango:Ubuntu Mono 9
+
+input "KBDFans DZ60" {
+	xkb_options compose:ralt
+}
+
+exec mako
+exec lxpolkit
+
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioNext exec playerctl next
+
+bindsym XF86AudioMute exec amixer -D pulse sset Master toggle
+bindsym XF86AudioLowerVolume exec amixer sset Master 5%- && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+ && pkill -RTMIN+10 i3blocks
+
+bindsym $mod+Return exec $term
+bindsym $mod+Shift+q kill
+bindsym $mod+Space exec $menu
+
+floating_modifier $mod normal
+
+bindsym $mod+Shift+c reload
+
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+# Move your focus around
+bindsym $mod+w focus up
+bindsym $mod+a focus left
+bindsym $mod+s focus down
+bindsym $mod+d focus right
+
+bindsym $mod+Shift+a move left
+bindsym $mod+Shift+s move down
+bindsym $mod+Shift+w move up
+bindsym $mod+Shift+d move right
+
+workspace 1 output DVI-D-1
+workspace 2 output DVI-D-1
+workspace 3 output DVI-D-1
+workspace 4 output DP-1
+workspace 5 output DP-1
+workspace 6 output DP-1
+
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+
+bindsym $mod+h splith
+bindsym $mod+v splitv
+
+bindsym $mod+t layout toggle split tabbed
+
+# Make the current focus fullscreen
+bindsym $mod+f fullscreen
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
+
+#
+# Resizing containers:
+#
+mode "resize" {
+	bindsym a resize shrink width 10px
+	bindsym s resize grow height 10px
+	bindsym w resize shrink height 10px
+	bindsym d resize grow width 10px
+
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+bar {
+	position bottom
+	separator_symbol '·'
+	status_command i3blocks
+	font pango:Ubuntu Mono 11
+
+	colors {
+		statusline #ffffff
+		background #000000
+		inactive_workspace #32323200 #32323200 #5c5c5c
+	}
+}
+
+new_window pixel
+hide_edge_borders both
+
+include @sysconfdir@/sway/config.d/*
